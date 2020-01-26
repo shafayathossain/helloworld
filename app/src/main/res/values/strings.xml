@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Simple Player</string>
+    <string name="app_name">Hello World</string>
     <string name="pref_name">hello_world_pref</string>
 </resources>
