@@ -1,8 +1,25 @@
 package com.example.helloworld
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.helloworld.data.MainRepository
+import com.example.helloworld.ui.MainViewModel
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.disposables.Disposable
+import io.reactivex.internal.schedulers.ExecutorScheduler
+import io.reactivex.plugins.RxJavaPlugins
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
+import java.util.concurrent.Callable
+import java.util.concurrent.Executor
+import java.util.concurrent.TimeUnit
 
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -10,8 +27,50 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    @Rule
+    @JvmField
+    val rule = InstantTaskExecutorRule()
+    @Mock
+    private lateinit var repository: MainRepository
+    private lateinit var viewModel: MainViewModel
+
+
+
+    @Before
+    fun initialize() {
+        MockitoAnnotations.initMocks(this)
+        viewModel = MainViewModel(repository)
+
+
+        val immediate: Scheduler = object : Scheduler() {
+
+            override fun scheduleDirect(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
+                return super.scheduleDirect(run, 0, unit)
+            }
+
+            override fun createWorker(): Worker {
+                return ExecutorScheduler.ExecutorWorker(Executor { it.run() }, false)
+            }
+        }
+
+//        RxJavaPlugins.setInitIoSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
+//        RxJavaPlugins.setInitComputationSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
+//        RxJavaPlugins.setInitNewThreadSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
+//        RxJavaPlugins.setInitSingleSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
+        RxAndroidPlugins.initMainThreadScheduler { immediate }
+    }
+
     @Test
-    fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+    fun getMessage() {
+        val expectedMessage = "Hello World!!"
+
+        `when`(repository.getMessage()).thenReturn(Single.just(expectedMessage))
+        viewModel.getMessage()
+        val actualMessage = LiveDataTestUtil<String>().getValue(viewModel.message)
+
+        assertEquals(expectedMessage, actualMessage)
+
     }
 }
