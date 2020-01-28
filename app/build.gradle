@@ -26,6 +26,9 @@ android {
     compileOptions {
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    dataBinding {
+        enabled = true
+    }
 }
 
 dependencies {
@@ -59,4 +62,7 @@ dependencies {
     // rxjava2
     implementation "io.reactivex.rxjava2:rxjava:2.2.17"
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // logger
+    implementation 'com.orhanobut:logger:2.2.0'
 }
