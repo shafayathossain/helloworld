@@ -1,4 +1,4 @@
-package com.example.helloworld.data
+package com.example.helloworld.data.repository.main
 
 import io.reactivex.Single
 

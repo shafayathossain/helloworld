@@ -1,4 +1,4 @@
-package com.example.helloworld.base
+package com.example.helloworld.core
 
 import com.example.helloworld.di.component.DaggerApplicationComponent
 import com.orhanobut.logger.AndroidLogAdapter

@@ -3,9 +3,8 @@ package com.example.helloworld.di.module
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
-import com.example.helloworld.data.AppPreference
-import com.example.helloworld.data.AppPreferenceImpl
-import com.example.helloworld.di.annotations.AppScope
+import com.example.helloworld.data.datasources.preference.AppPreference
+import com.example.helloworld.data.datasources.preference.AppPreferenceImpl
 import com.example.helloworld.di.annotations.ApplicationContext
 import com.example.helloworld.utils.ViewModelFactory
 import dagger.Binds

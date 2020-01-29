@@ -1,4 +1,4 @@
-package com.example.helloworld.base
+package com.example.helloworld.core
 
 import android.content.Context
 import android.os.Bundle

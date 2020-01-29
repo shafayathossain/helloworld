@@ -2,7 +2,7 @@ package com.example.helloworld.ui.features.main
 
 import android.os.Bundle
 import com.example.helloworld.R
-import com.example.helloworld.base.BaseActivity
+import com.example.helloworld.core.BaseActivity
 import com.example.helloworld.databinding.ActivityMainBinding
 import kotlinx.android.synthetic.main.activity_main.*
 

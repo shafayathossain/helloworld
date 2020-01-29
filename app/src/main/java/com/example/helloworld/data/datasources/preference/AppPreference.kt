@@ -1,4 +1,4 @@
-package com.example.helloworld.data
+package com.example.helloworld.data.datasources.preference
 
 interface AppPreference {
 

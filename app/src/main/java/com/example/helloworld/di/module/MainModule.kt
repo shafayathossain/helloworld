@@ -1,8 +1,8 @@
 package com.example.helloworld.di.module
 
 import androidx.lifecycle.ViewModel
-import com.example.helloworld.data.MainRepository
-import com.example.helloworld.data.MainRepositoryImpl
+import com.example.helloworld.data.repository.main.MainRepository
+import com.example.helloworld.data.repository.main.MainRepositoryImpl
 import com.example.helloworld.di.annotations.ActivityScope
 import com.example.helloworld.di.annotations.FragmentScope
 import com.example.helloworld.di.annotations.ViewModelKey

@@ -1,4 +1,4 @@
-package com.example.helloworld.data
+package com.example.helloworld.data.datasources.preference
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
@@ -8,7 +8,8 @@ import com.google.gson.Gson
 import javax.inject.Inject
 
 
-class AppPreferenceImpl @Inject constructor(@ApplicationContext context: Context) : AppPreference {
+class AppPreferenceImpl @Inject constructor(@ApplicationContext context: Context) :
+    AppPreference {
 
     private var preference =
         context.getSharedPreferences(context.getString(R.string.pref_name), MODE_PRIVATE)

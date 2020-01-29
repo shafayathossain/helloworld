@@ -1,7 +1,7 @@
 package com.example.helloworld.di.component
 
 import android.app.Application
-import com.example.helloworld.base.BaseApplication
+import com.example.helloworld.core.BaseApplication
 import com.example.helloworld.di.annotations.AppScope
 import com.example.helloworld.di.module.AppModule
 import com.example.helloworld.di.module.MainModule

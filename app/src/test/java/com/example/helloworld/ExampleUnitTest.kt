@@ -1,7 +1,7 @@
 package com.example.helloworld
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.helloworld.data.MainRepository
+import com.example.helloworld.data.repository.main.MainRepository
 import com.example.helloworld.ui.features.main.MainViewModel
 import io.reactivex.Scheduler
 import io.reactivex.Single

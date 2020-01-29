@@ -1,8 +1,8 @@
 package com.example.helloworld.ui.features.main
 
 import androidx.lifecycle.MutableLiveData
-import com.example.helloworld.base.BaseViewModel
-import com.example.helloworld.data.MainRepository
+import com.example.helloworld.core.BaseViewModel
+import com.example.helloworld.data.repository.main.MainRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
