@@ -6,9 +6,9 @@ import com.example.helloworld.data.MainRepositoryImpl
 import com.example.helloworld.di.annotations.ActivityScope
 import com.example.helloworld.di.annotations.FragmentScope
 import com.example.helloworld.di.annotations.ViewModelKey
-import com.example.helloworld.ui.MainActivity
-import com.example.helloworld.ui.MainFragment
-import com.example.helloworld.ui.MainViewModel
+import com.example.helloworld.ui.features.main.MainActivity
+import com.example.helloworld.ui.features.main.MainFragment
+import com.example.helloworld.ui.features.main.MainViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

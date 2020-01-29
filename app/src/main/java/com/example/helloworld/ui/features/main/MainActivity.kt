@@ -1,4 +1,4 @@
-package com.example.helloworld.ui
+package com.example.helloworld.ui.features.main
 
 import android.os.Bundle
 import com.example.helloworld.R
@@ -11,7 +11,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportFragmentManager.beginTransaction()
-            .replace(fragmentContainer.id, MainFragment())
+            .replace(fragmentContainer.id,
+                MainFragment()
+            )
             .commit()
     }
 

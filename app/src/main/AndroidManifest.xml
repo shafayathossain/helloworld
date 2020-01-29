@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:name="com.example.helloworld.base.BaseApplication"
         android:theme="@style/AppTheme">
-        <activity android:name="com.example.helloworld.ui.MainActivity">
+        <activity android:name="com.example.helloworld.ui.features.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

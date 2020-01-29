@@ -2,13 +2,12 @@ package com.example.helloworld
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.helloworld.data.MainRepository
-import com.example.helloworld.ui.MainViewModel
+import com.example.helloworld.ui.features.main.MainViewModel
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler
-import io.reactivex.plugins.RxJavaPlugins
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -40,7 +39,8 @@ class ExampleUnitTest {
     @Before
     fun initialize() {
         MockitoAnnotations.initMocks(this)
-        viewModel = MainViewModel(repository)
+        viewModel =
+            MainViewModel(repository)
 
 
         val immediate: Scheduler = object : Scheduler() {

@@ -1,22 +1,21 @@
-package com.example.helloworld.ui
+package com.example.helloworld.ui.features.main
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
 import com.example.helloworld.R
 import com.example.helloworld.base.BaseFragment
-import kotlinx.android.synthetic.main.fragment_main.*
+import com.example.helloworld.databinding.FragmentMainBinding
 
-class MainFragment : BaseFragment<MainViewModel>() {
+class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
 
     override fun getLayoutId(): Int = R.layout.fragment_main
 
+    override fun setVariables(binding: FragmentMainBinding) {
+        binding.viewModel = viewModel
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.message.observe(this, Observer {
-            tvMessage.text = it
-        })
 
         viewModel.getMessage()
     }

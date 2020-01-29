@@ -1,4 +1,4 @@
-package com.example.helloworld.ui
+package com.example.helloworld.ui.features.main
 
 import androidx.lifecycle.MutableLiveData
 import com.example.helloworld.base.BaseViewModel
