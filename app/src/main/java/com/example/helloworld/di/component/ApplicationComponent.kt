@@ -9,13 +9,13 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import javax.inject.Singleton
 
-@AppScope
 @Component(modules = arrayOf(
     AndroidSupportInjectionModule::class,
     AppModule::class,
     MainModule::class))
-interface ApplicationComponent : AndroidInjector<BaseApplication> {
+@Singleton interface ApplicationComponent : AndroidInjector<BaseApplication> {
 
     @Component.Builder
     interface Builder {

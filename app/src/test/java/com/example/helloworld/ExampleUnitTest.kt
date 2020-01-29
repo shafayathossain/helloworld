@@ -1,6 +1,7 @@
 package com.example.helloworld
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.helloworld.data.model.Message
 import com.example.helloworld.data.repository.main.MainRepository
 import com.example.helloworld.ui.features.main.MainViewModel
 import io.reactivex.Scheduler
@@ -64,7 +65,7 @@ class ExampleUnitTest {
 
     @Test
     fun getMessage() {
-        val expectedMessage = "Hello World!!"
+        val expectedMessage = Message("Hello World!!")
 
         `when`(repository.getMessage()).thenReturn(Single.just(expectedMessage))
         viewModel.getMessage()

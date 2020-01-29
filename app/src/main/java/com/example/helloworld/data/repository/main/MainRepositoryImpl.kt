@@ -1,15 +1,15 @@
 package com.example.helloworld.data.repository.main
 
+import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
+import com.example.helloworld.data.model.Message
 import com.example.helloworld.data.repository.main.MainRepository
 import io.reactivex.Single
 import javax.inject.Inject
 
-class MainRepositoryImpl @Inject constructor() :
+class MainRepositoryImpl @Inject constructor(private val networkSource: MessageNetworkSource) :
     MainRepository {
 
-    override fun getMessage(): Single<String> {
-        return Single.create {
-            it.onSuccess("Hello World!!")
-        }
+    override fun getMessage(): Single<Message> {
+        return networkSource.getMessage()
     }
 }

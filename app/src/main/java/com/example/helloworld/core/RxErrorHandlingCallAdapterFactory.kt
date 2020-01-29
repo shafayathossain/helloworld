@@ -1,8 +1,8 @@
 package com.example.helloworld.core
 
-import android.annotation.SuppressLint
-import io.reactivex.Observable
-import io.reactivex.Scheduler
+import android.content.Context
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
 import retrofit2.CallAdapter
 import retrofit2.HttpException
@@ -11,53 +11,60 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.IOException
 import java.lang.reflect.Type
 
-class RxErrorHandlingCallAdapterFactory : CallAdapter.Factory {
+class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapter.Factory() {
+
+    private val _original by lazy {
+        RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io())
+    }
+
     companion object {
-        fun create(): CallAdapter.Factory = RxErrorHandlingCallAdapterFactory()
-        fun create(io: Scheduler): CallAdapter.Factory = RxErrorHandlingCallAdapterFactory(io)
-    }
-
-    private val original: RxJava2CallAdapterFactory
-
-    private constructor() {
-        original = RxJava2CallAdapterFactory.create()
-    }
-
-    private constructor(scheduler: Scheduler) {
-        original = RxJava2CallAdapterFactory.createWithScheduler(scheduler)
+        fun create(context: Context) : CallAdapter.Factory = RxErrorHandlingCallAdapterFactory(context)
     }
 
     override fun get(returnType: Type, annotations: Array<Annotation>, retrofit: Retrofit): CallAdapter<*, *> {
-        val wrapped = original.get(returnType, annotations, retrofit) as? CallAdapter<out Any, *>
-        return RxCallAdapterWrapper(retrofit, wrapped)
+        val wrapped = _original.get(returnType, annotations, retrofit) as CallAdapter<out Any, *>
+        return RxCallAdapterWrapper(context, retrofit, wrapped)
     }
 
-    private class RxCallAdapterWrapper<R>(
-        private val retrofit: Retrofit,
-        private val wrapped: CallAdapter<R, *>?
-    ) : CallAdapter<R, Observable<R>> {
+    private class RxCallAdapterWrapper<R>(val context: Context,
+                                          val _retrofit: Retrofit,
+                                          val _wrappedCallAdapter: CallAdapter<R, *>
+                                          ): CallAdapter<R, Single<R>> {
 
-        override fun responseType(): Type? {
-            return wrapped?.responseType()
-        }
+        override fun responseType(): Type = _wrappedCallAdapter.responseType()
 
-        @SuppressLint("CheckResult")
+
         @Suppress("UNCHECKED_CAST")
-        override fun adapt(call: Call<R>): Observable<R>? {
-            val adapted = (wrapped?.adapt(call) as? Observable<R>)
-
+        override fun adapt(call: Call<R>): Single<R> {
+            val adapted = (_wrappedCallAdapter.adapt(call) as Single<R>)
+            adapted.onErrorResumeNext { throwable: Throwable ->
+                Single.error(asRetrofitException(throwable, call.request().url.host))
+            }
 
             return adapted
         }
 
-        private fun asRetrofitException(throwable: Throwable) = when (throwable) {
-            is HttpException -> RetrofitException.httpError(
-                throwable.response()?.raw()?.request?.url.toString(),
-                throwable.response(),
-                retrofit
-            )
-            is IOException -> RetrofitException.networkError(throwable)
-            else -> RetrofitException.unexpectedError(throwable)
+        private fun asRetrofitException(throwable: Throwable, host: String): RetrofitException {
+            // We had non-200 http error
+            if (throwable is HttpException) {
+                val response = throwable.response()
+
+                if (throwable.code() == 422) {
+                    // on out api 422's get metadata in the response. Adjust logic here based on your needs 
+                    return RetrofitException.httpErrorWithObject(response?.raw()?.request?.url.toString(), response, _retrofit)
+                } else {
+                    return RetrofitException.httpError(response?.raw()?.request?.url.toString(), response, _retrofit)
+                }
+            }
+
+            // A network error happened
+            if (throwable is IOException) {
+                return RetrofitException.parseIOException(context,throwable, host)
+            }
+
+            // We don't know what happened. We need to simply convert to an unknown error
+            return RetrofitException.unexpectedError(throwable)
         }
+
     }
 }

@@ -16,7 +16,7 @@ class MainViewModel @Inject constructor( private val repository: MainRepository)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
-                message.value = it
+                message.value = it.message
             }, {
                 it.printStackTrace()
             })

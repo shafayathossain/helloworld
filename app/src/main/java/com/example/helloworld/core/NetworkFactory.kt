@@ -9,9 +9,11 @@ import com.example.helloworld.data.datasources.preference.AppPreference
 import com.example.helloworld.data.datasources.preference.AppPreferenceImpl
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
+import okio.BufferedSource
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 object NetworkFactory {
@@ -21,6 +23,7 @@ object NetworkFactory {
 
     fun <Service> createService(appContext: Context, serviceClass: Class<Service>): Service {
         return getRetrofit(
+            appContext,
             BASE_URL,
             getOkHttpClient(
                 getAuthInterceptor(appContext),
@@ -32,6 +35,7 @@ object NetworkFactory {
 
     fun getRetrofit(appContext: Context): Retrofit {
         return getRetrofit(
+            context = appContext,
             okHttpClient = getOkHttpClient(
                 getAuthInterceptor(appContext),
                 getLogInterceptors(),
@@ -40,11 +44,11 @@ object NetworkFactory {
         )
     }
 
-    private fun getRetrofit(baseUrl: String = BASE_URL, okHttpClient: OkHttpClient): Retrofit {
+    private fun getRetrofit(context: Context, baseUrl: String = BASE_URL, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(context))
             .client(okHttpClient)
             .build()
     }
@@ -77,6 +81,7 @@ object NetworkFactory {
                 }
 
                 return chain.proceed(requestBuilder.build())
+
             }
 
         }
