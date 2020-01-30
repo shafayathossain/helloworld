@@ -1,9 +1,6 @@
-package com.example.helloworld.core
+package com.example.helloworld.core.network
 
 import android.content.Context
-import android.content.Intent
-import android.os.Build
-import android.os.Bundle
 import com.example.helloworld.BuildConfig
 import com.example.helloworld.data.datasources.preference.AppPreference
 import com.example.helloworld.data.datasources.preference.AppPreferenceImpl
@@ -11,10 +8,7 @@ import com.example.helloworld.utils.ConnectivityAndInternetAccess
 import com.orhanobut.logger.Logger
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import okio.BufferedSource
-import okio.Okio
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import kotlin.Exception
@@ -29,7 +23,9 @@ object NetworkFactory {
             appContext,
             BASE_URL,
             getOkHttpClient(
-                getAuthInterceptor(appContext),
+                getAuthInterceptor(
+                    appContext
+                ),
                 getLogInterceptors(),
                 appContext
             )
@@ -40,7 +36,9 @@ object NetworkFactory {
         return getRetrofit(
             context = appContext,
             okHttpClient = getOkHttpClient(
-                getAuthInterceptor(appContext),
+                getAuthInterceptor(
+                    appContext
+                ),
                 getLogInterceptors(),
                 appContext
             )
@@ -51,7 +49,11 @@ object NetworkFactory {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(context))
+            .addCallAdapterFactory(
+                RxErrorHandlingCallAdapterFactory.create(
+                    context
+                )
+            )
             .client(okHttpClient)
             .callbackExecutor {
                 Logger.d("returning")

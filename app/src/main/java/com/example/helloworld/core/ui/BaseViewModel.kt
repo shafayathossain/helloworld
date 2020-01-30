@@ -1,4 +1,4 @@
-package com.example.helloworld.core
+package com.example.helloworld.core.ui
 
 import androidx.lifecycle.*
 import com.orhanobut.logger.Logger

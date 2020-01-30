@@ -1,4 +1,4 @@
-package com.example.helloworld.core
+package com.example.helloworld.core.ui
 
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar

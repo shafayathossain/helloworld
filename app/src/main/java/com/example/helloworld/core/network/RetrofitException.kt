@@ -1,7 +1,6 @@
-package com.example.helloworld.core
+package com.example.helloworld.core.network
 
 import android.content.Context
-import android.net.ConnectivityManager
 import com.example.helloworld.utils.ConnectivityAndInternetAccess
 import com.google.gson.annotations.SerializedName
 import okhttp3.ResponseBody
@@ -28,28 +27,70 @@ class RetrofitException(private val _message: String?,
     companion object {
         fun httpError(url: String, response: Response<*>?, retrofit: Retrofit): RetrofitException {
             val message = response?.code().toString() + " " + response?.message()
-            return RetrofitException(message, url, response, Kind.HTTP, null, retrofit)
+            return RetrofitException(
+                message,
+                url,
+                response,
+                Kind.HTTP,
+                null,
+                retrofit
+            )
         }
 
         fun httpErrorWithObject(url: String, response: Response<*>?, retrofit: Retrofit): RetrofitException {
             val message = response?.code().toString() + " " + response?.message()
-            val error = RetrofitException(message, url, response, Kind.HTTP_422_WITH_DATA, null, retrofit)
+            val error = RetrofitException(
+                message,
+                url,
+                response,
+                Kind.HTTP_422_WITH_DATA,
+                null,
+                retrofit
+            )
             return error
         }
 
         fun networkError(exception: IOException): RetrofitException {
-            return RetrofitException(exception.message, null, null, Kind.NETWORK, exception, null)
+            return RetrofitException(
+                exception.message,
+                null,
+                null,
+                Kind.NETWORK,
+                exception,
+                null
+            )
         }
 
         fun unexpectedError(exception: Throwable): RetrofitException {
-            return RetrofitException(exception.message, null, null, Kind.UNEXPECTED, exception, null)
+            return RetrofitException(
+                exception.message,
+                null,
+                null,
+                Kind.UNEXPECTED,
+                exception,
+                null
+            )
         }
 
         fun parseIOException(appContext: Context, throwable: Throwable, url: String): RetrofitException {
             return if (!ConnectivityAndInternetAccess.isConnectedToInternet(appContext, url)) {
-                RetrofitException("Slow or no internet connection", null, null, Kind.NETWORK, throwable, null)
+                RetrofitException(
+                    "Slow or no internet connection",
+                    null,
+                    null,
+                    Kind.NETWORK,
+                    throwable,
+                    null
+                )
             } else {
-                RetrofitException("Unknown error occured" , null, null, Kind.UNEXPECTED, throwable, null)
+                RetrofitException(
+                    "Unknown error occured",
+                    null,
+                    null,
+                    Kind.UNEXPECTED,
+                    throwable,
+                    null
+                )
             }
         }
         /**
@@ -58,10 +99,16 @@ class RetrofitException(private val _message: String?,
         fun parseRequestException(appContext: Context, code: Int, errorBody: ResponseBody? = null, message: String? = null): RequestException {
             errorBody?.let { body ->
                 // parse error model from response
-                val requestError: ApiError = getConverter(appContext, ApiError::class.java, body)
+                val requestError: ApiError =
+                    getConverter(
+                        appContext,
+                        ApiError::class.java,
+                        body
+                    )
 
                 // if error response does not contain any specific message use a generic error message from resource
-                return RequestException().apply {
+                return RequestException()
+                    .apply {
                     this.message = if (requestError.message.isBlank()) {
                         "Failed, please try again later"
                     } else {
@@ -73,10 +120,14 @@ class RetrofitException(private val _message: String?,
             }
 
             message?.let {msg ->
-                return RequestException(message = msg)
+                return RequestException(
+                    message = msg
+                )
             }
 
-            return RequestException(message = "Failed, please try again later")
+            return RequestException(
+                message = "Failed, please try again later"
+            )
         }
 
         /**

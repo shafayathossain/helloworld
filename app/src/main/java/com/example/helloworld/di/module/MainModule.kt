@@ -2,7 +2,7 @@ package com.example.helloworld.di.module
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.example.helloworld.core.NetworkFactory
+import com.example.helloworld.core.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
 import com.example.helloworld.data.repository.main.MainRepository
 import com.example.helloworld.data.repository.main.MainRepositoryImpl

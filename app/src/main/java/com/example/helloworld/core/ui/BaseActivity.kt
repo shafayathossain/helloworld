@@ -1,4 +1,4 @@
-package com.example.helloworld.core
+package com.example.helloworld.core.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,7 +13,8 @@ import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
 abstract class BaseActivity<ViewModel: BaseViewModel, Binding: ViewDataBinding>
-    : DaggerAppCompatActivity(), BaseFragmentCommunicator {
+    : DaggerAppCompatActivity(),
+    BaseFragmentCommunicator {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
