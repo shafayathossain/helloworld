@@ -7,14 +7,17 @@ import android.os.Bundle
 import com.example.helloworld.BuildConfig
 import com.example.helloworld.data.datasources.preference.AppPreference
 import com.example.helloworld.data.datasources.preference.AppPreferenceImpl
+import com.example.helloworld.utils.ConnectivityAndInternetAccess
+import com.orhanobut.logger.Logger
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import okio.BufferedSource
+import okio.Okio
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.Exception
 import java.util.concurrent.TimeUnit
+import kotlin.Exception
 
 object NetworkFactory {
 
@@ -50,6 +53,9 @@ object NetworkFactory {
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(RxErrorHandlingCallAdapterFactory.create(context))
             .client(okHttpClient)
+            .callbackExecutor {
+                Logger.d("returning")
+            }
             .build()
     }
 
@@ -79,8 +85,14 @@ object NetworkFactory {
                     requestBuilder.addHeader("Authorization", token)
                         .addHeader("Cache-control", "no-cache")
                 }
-
-                return chain.proceed(requestBuilder.build())
+                try {
+                    return chain.proceed(requestBuilder.build())
+                } catch (e: Exception) {
+                    if(ConnectivityAndInternetAccess.isConnectedToInternet(appContext, chain.request().url.host))
+                        throw e
+                    else
+                        throw Exception("Slow or no internet connection")
+                }
 
             }
 

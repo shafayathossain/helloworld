@@ -37,11 +37,9 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         @Suppress("UNCHECKED_CAST")
         override fun adapt(call: Call<R>): Single<R> {
             val adapted = (_wrappedCallAdapter.adapt(call) as Single<R>)
-            adapted.onErrorResumeNext { throwable: Throwable ->
+            return adapted.onErrorResumeNext { throwable: Throwable ->
                 Single.error(asRetrofitException(throwable, call.request().url.host))
             }
-
-            return adapted
         }
 
         private fun asRetrofitException(throwable: Throwable, host: String): RetrofitException {
