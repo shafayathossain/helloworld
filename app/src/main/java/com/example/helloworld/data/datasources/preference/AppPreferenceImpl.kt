@@ -11,56 +11,66 @@ import javax.inject.Inject
 class AppPreferenceImpl @Inject constructor(@ApplicationContext context: Context) :
     AppPreference {
 
+    companion object {
+        const val MESSAGE = "message"
+    }
+
     private var preference =
         context.getSharedPreferences(context.getString(R.string.pref_name), MODE_PRIVATE)
     private var editor = preference.edit()
 
-    override fun saveString(key: String, value: String) {
+    override var message: String
+        get() = getString(MESSAGE)
+        set(value) {
+            saveString(MESSAGE, value)
+        }
+
+    private fun saveString(key: String, value: String) {
         editor.putString(key, value).apply()
     }
 
-    override fun getString(key: String): String {
-        return preference.getString(key, "") ?: ""
+    private fun getString(key: String, defaultValue: String = ""): String {
+        return preference.getString(key, defaultValue) ?: defaultValue
     }
 
-    override fun saveBoolean(key: String, value: Boolean) {
+    private fun saveBoolean(key: String, value: Boolean) {
         editor.putBoolean(key, value).apply()
     }
 
-    override fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+    private fun getBoolean(key: String, defaultValue: Boolean): Boolean {
         return preference.getBoolean(key, defaultValue)
     }
 
-    override fun saveInt(key: String, value: Int) {
+    private fun saveInt(key: String, value: Int) {
         editor.putInt(key, value).apply()
     }
 
-    override fun getInt(key: String, defaultValue: Int): Int {
+    private fun getInt(key: String, defaultValue: Int): Int {
         return preference.getInt(key, defaultValue)
     }
 
-    override fun saveFloat(key: String, value: Float) {
+    private fun saveFloat(key: String, value: Float) {
         editor.putFloat(key, value).apply()
     }
 
-    override fun getFloat(key: String, defaultValue: Float): Float {
+    private fun getFloat(key: String, defaultValue: Float): Float {
         return preference.getFloat(key, defaultValue)
     }
 
-    override fun saveLong(key: String, value: Long) {
+    private fun saveLong(key: String, value: Long) {
         editor.putLong(key, value).apply()
     }
 
-    override fun getLong(key: String, defaultValue: Long): Long {
+    private fun getLong(key: String, defaultValue: Long): Long {
         return preference.getLong(key, defaultValue)
     }
 
-    override fun saveObject(key: String, value: Any) {
+    private fun saveObject(key: String, value: Any) {
         val valueString = Gson().toJson(value)
         saveString(key, valueString)
     }
 
-    override fun <T>getObject(key: String, clazz: Class<T>): T {
+    private fun <T>getObject(key: String, clazz: Class<T>): T {
         return Gson().fromJson<T>(preference.getString(key, "{}"), clazz)
     }
 

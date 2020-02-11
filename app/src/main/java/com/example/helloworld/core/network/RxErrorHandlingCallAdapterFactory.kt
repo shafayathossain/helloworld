@@ -1,6 +1,7 @@
 package com.example.helloworld.core.network
 
 import android.content.Context
+import com.example.helloworld.utils.ConnectivityAndInternetAccess
 import io.reactivex.*
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Call
@@ -52,7 +53,7 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         override fun adapt(call: Call<R>): Single<R> {
             val adapted = (wrappedCallAdapter.adapt(call) as Single<R>)
             return adapted.onErrorResumeNext { throwable: Throwable ->
-                Single.error(asRetrofitException(throwable, call.request().url.host, retrofit))
+                Single.error(asRetrofitException(context, throwable, call.request().url.host, retrofit))
             }
         }
     }
@@ -68,7 +69,7 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         override fun adapt(call: Call<R>): Flowable<R> {
             val adapted = (wrappedCallAdapter.adapt(call) as Flowable<R>)
             return adapted.onErrorResumeNext { throwable: Throwable ->
-                Flowable.error(asRetrofitException(throwable, call.request().url.host, retrofit))
+                Flowable.error(asRetrofitException(context, throwable, call.request().url.host, retrofit))
             }
         }
     }
@@ -84,7 +85,7 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         override fun adapt(call: Call<R>): Maybe<R> {
             val adapted = (wrappedCallAdapter.adapt(call) as Maybe<R>)
             return adapted.onErrorResumeNext { throwable: Throwable ->
-                Maybe.error(asRetrofitException(throwable, call.request().url.host, retrofit))
+                Maybe.error(asRetrofitException(context, throwable, call.request().url.host, retrofit))
             }
         }
     }
@@ -100,7 +101,7 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         override fun adapt(call: Call<R>): Observable<R> {
             val adapted = (wrappedCallAdapter.adapt(call) as Observable<R>)
             return adapted.onErrorResumeNext { throwable: Throwable ->
-                Observable.error(asRetrofitException(throwable, call.request().url.host, retrofit))
+                Observable.error(asRetrofitException(context, throwable, call.request().url.host, retrofit))
             }
         }
     }
@@ -116,12 +117,12 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         override fun adapt(call: Call<R>): Completable {
             val adapted = (wrappedCallAdapter.adapt(call) as Completable)
             return adapted.onErrorResumeNext { throwable: Throwable ->
-                Completable.error(asRetrofitException(throwable, call.request().url.host, retrofit))
+                Completable.error(asRetrofitException(context, throwable, call.request().url.host, retrofit))
             }
         }
     }
 
-    private fun asRetrofitException(throwable: Throwable, host: String, retrofit: Retrofit): RetrofitException {
+    private fun asRetrofitException(context: Context, throwable: Throwable, host: String, retrofit: Retrofit): RetrofitException {
         // We had non-200 http error
         if (throwable is HttpException) {
             val response = throwable.response()
@@ -135,7 +136,10 @@ class RxErrorHandlingCallAdapterFactory(private val context: Context): CallAdapt
         }
 
         // A network error happened
-        if (throwable is IOException) {
+        if(!ConnectivityAndInternetAccess.isConnectedToInternet(context, host)) {
+            return RetrofitException.parseIOException(context, throwable, host)
+        }
+        else if (throwable is IOException) {
             return RetrofitException.parseIOException(context,throwable, host)
         }
 

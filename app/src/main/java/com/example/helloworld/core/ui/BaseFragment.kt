@@ -26,7 +26,7 @@ abstract class BaseFragment<ViewModel: BaseViewModel, Binding: ViewDataBinding>:
 
     abstract fun setVariables(binding: Binding)
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if(context is BaseFragmentCommunicator) {
             communicator = context
@@ -35,7 +35,7 @@ abstract class BaseFragment<ViewModel: BaseViewModel, Binding: ViewDataBinding>:
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, factory).get(getViewModelClass())
+        viewModel = ViewModelProvider(this, factory).get(getViewModelClass())
 
     }
 

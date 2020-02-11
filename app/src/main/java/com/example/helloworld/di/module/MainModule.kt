@@ -2,6 +2,9 @@ package com.example.helloworld.di.module
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.room.Room
+import com.example.helloworld.BuildConfig
+import com.example.helloworld.core.localdb.AppDatabase
 import com.example.helloworld.core.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
 import com.example.helloworld.data.repository.main.MainRepository
@@ -47,6 +50,15 @@ abstract class MainModule {
         @JvmStatic
         fun provideMessageNetworkService(@ApplicationContext context: Context): MessageNetworkService {
             return NetworkFactory.createService(context, MessageNetworkService::class.java)
+        }
+
+        @Provides
+        @Singleton
+        @JvmStatic
+        fun provideLocalDB(@ApplicationContext context: Context): AppDatabase {
+            return Room.databaseBuilder(context,
+                AppDatabase::class.java, BuildConfig.DB_NAME)
+                .build()
         }
     }
 }

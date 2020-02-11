@@ -20,11 +20,13 @@ android {
     buildTypes {
         debug {
             buildConfigField "String", "BASE_URL", "\"https://raw.githubusercontent.com/shafayathossain/helloworld/master/\""
+            buildConfigField "String", "DB_NAME", "\"app_db\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", "\"https://raw.githubusercontent.com/shafayathossain/helloworld/master/\""
+            buildConfigField "String", "DB_NAME", "\"app_db\""
         }
     }
     compileOptions {
@@ -38,30 +40,30 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
-    testImplementation "org.mockito:mockito-core:2.25.0"
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation "org.mockito:mockito-core:2.26.0"
 
     // lifecycle component
-    implementation "androidx.lifecycle:lifecycle-extensions:2.1.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     testImplementation 'android.arch.core:core-testing:1.1.1'
 
     // material component
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
 
     // gson
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // dagger2
-    api 'com.google.dagger:dagger:2.23.2'
-    api 'com.google.dagger:dagger-android:2.23.2'
-    api 'com.google.dagger:dagger-android-support:2.23.2' // if you use the support libraries
+    api 'com.google.dagger:dagger:2.25.2'
+    api 'com.google.dagger:dagger-android:2.25.2'
+    api 'com.google.dagger:dagger-android-support:2.25.2' // if you use the support libraries
     kapt 'com.google.dagger:dagger-android-processor:2.23.2'
-    kapt 'com.google.dagger:dagger-compiler:2.23.2'
+    kapt 'com.google.dagger:dagger-compiler:2.25.2'
 
     // rxjava2
     implementation "io.reactivex.rxjava2:rxjava:2.2.17"
@@ -75,4 +77,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.7.1'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
+
+    // room
+    implementation "androidx.room:room-runtime:2.2.3"
+    kapt "androidx.room:room-compiler:2.2.3"
+    implementation "androidx.room:room-rxjava2:2.2.3"
+    testImplementation "androidx.room:room-testing:2.2.3"
+
+    // debug db
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.6'
 }
