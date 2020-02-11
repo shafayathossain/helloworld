@@ -269,14 +269,14 @@ class ConnectivityAndInternetAccess(val host: String) {
                 } else {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (networkCapabilities
-                                        .hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/
-                                && networkCapabilities!!.hasCapability(
+                                        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true /*API >= 21*/
+                                && networkCapabilities.hasCapability(
                                         NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/) {
                             isConnected = true
                         }
                     } else {
                         if (networkCapabilities
-                                        .hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/) {
+                                        ?.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) == true /*API >= 21*/) {
                             isConnected = true
                         }
                     }
