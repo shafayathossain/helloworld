@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.helloworld.data.model.Message
 import com.example.helloworld.data.repository.main.MainRepository
 import com.example.helloworld.ui.features.main.MainViewModel
+import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -14,7 +15,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import java.util.concurrent.Callable
 import java.util.concurrent.Executor
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
-class ExampleUnitTest {
+class MainViewModelUnitTest {
 
     @Rule
     @JvmField
@@ -65,13 +66,14 @@ class ExampleUnitTest {
 
     @Test
     fun getMessage() {
-        val expectedMessage = Message("Hello World!!")
+        val expectedMessage = Message(message = "Hello World!!")
 
-        `when`(repository.getMessage()).thenReturn(Single.just(expectedMessage))
+        `when`(repository.getMessage()).thenReturn(Maybe.just(expectedMessage))
         viewModel.getMessage()
+        verify(repository, times(1)).getMessage()
         val actualMessage = LiveDataTestUtil<String>().getValue(viewModel.message)
 
-        assertEquals(expectedMessage, actualMessage)
+        assertEquals(expectedMessage.message, actualMessage)
 
     }
 }

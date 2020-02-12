@@ -5,9 +5,6 @@ import com.example.helloworld.core.network.RetrofitException
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
 import com.example.helloworld.data.datasources.preference.AppPreference
 import com.example.helloworld.data.model.Message
-import com.example.helloworld.data.repository.main.MainRepository
-import com.orhanobut.logger.Logger
-import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
@@ -31,7 +28,7 @@ class MainRepositoryImpl @Inject constructor(private val networkSource: MessageN
                 if(throwable is RetrofitException) {
                     if(throwable.getKind() == RetrofitException.Kind.NETWORK) {
                         db.messageDao().getMessage()
-                            .onErrorResumeNext { daoThrowable: Throwable ->
+                            .onErrorResumeNext { _ ->
                                 Single.create<Message> {
                                     it.onSuccess(Message(message = preference.message))
                                 }
@@ -45,7 +42,7 @@ class MainRepositoryImpl @Inject constructor(private val networkSource: MessageN
             }.map {
                 var message = it
                 if(it.message.isNullOrEmpty()) {
-                    message = Message(message = "Hello World")
+                    message = Message(message = "Hello World!")
                 }
                 preference.message = message.message
                 db.messageDao().insertMessage(message)

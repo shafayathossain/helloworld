@@ -7,6 +7,8 @@ import com.example.helloworld.BuildConfig
 import com.example.helloworld.core.localdb.AppDatabase
 import com.example.helloworld.core.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
+import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
+import com.example.helloworld.data.datasources.networksource.MessageNetworkSourceImpl
 import com.example.helloworld.data.repository.main.MainRepository
 import com.example.helloworld.data.repository.main.MainRepositoryImpl
 import com.example.helloworld.di.annotations.ActivityScope
@@ -41,6 +43,9 @@ abstract class MainModule {
 
     @Binds
     abstract fun bindMainRepository(repo: MainRepositoryImpl): MainRepository
+
+    @Binds
+    abstract fun bindNetworkSource(source: MessageNetworkSourceImpl): MessageNetworkSource
 
     @Module
     companion object {
