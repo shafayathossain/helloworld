@@ -33,10 +33,6 @@ import java.util.concurrent.TimeUnit
 
 class MainRepositoryUnitTest {
 
-    @Rule
-    @JvmField
-    val rule = InstantTaskExecutorRule()
-
     @Mock
     private lateinit var networkSource: MessageNetworkSource
     @Mock
@@ -56,24 +52,6 @@ class MainRepositoryUnitTest {
         MockitoAnnotations.initMocks(this)
         captor = KArgumentCaptor(ArgumentCaptor.forClass(Message::class.java), Message::class)
         repository = MainRepositoryImpl(networkSource, db, preference)
-
-        val immediate: Scheduler = object : Scheduler() {
-
-            override fun scheduleDirect(run: Runnable, delay: Long, unit: TimeUnit): Disposable {
-                return super.scheduleDirect(run, 0, unit)
-            }
-
-            override fun createWorker(): Worker {
-                return ExecutorScheduler.ExecutorWorker(Executor { it.run() }, false)
-            }
-        }
-
-        RxJavaPlugins.setInitIoSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
-        RxJavaPlugins.setInitComputationSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
-        RxJavaPlugins.setInitNewThreadSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
-        RxJavaPlugins.setInitSingleSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
-        RxAndroidPlugins.setInitMainThreadSchedulerHandler { scheduler: Callable<Scheduler?>? -> immediate }
-        RxAndroidPlugins.initMainThreadScheduler { immediate }
     }
 
     @Test
