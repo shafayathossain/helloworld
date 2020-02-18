@@ -45,7 +45,7 @@ object NetworkFactory {
         )
     }
 
-    private fun getRetrofit(context: Context, baseUrl: String = BASE_URL, okHttpClient: OkHttpClient): Retrofit {
+    fun getRetrofit(context: Context, baseUrl: String = BASE_URL, okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
@@ -61,7 +61,7 @@ object NetworkFactory {
             .build()
     }
 
-    private fun getOkHttpClient(authInterceptor: Interceptor, logInterceptor: Interceptor, context: Context): OkHttpClient {
+    fun getOkHttpClient(authInterceptor: Interceptor, logInterceptor: Interceptor, context: Context): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
@@ -77,7 +77,7 @@ object NetworkFactory {
             .build()
     }
 
-    private fun getAuthInterceptor(appContext: Context): Interceptor {
+    fun getAuthInterceptor(appContext: Context): Interceptor {
         return object: Interceptor {
             override fun intercept(chain: Interceptor.Chain): Response {
                 val requestBuilder = chain.request().newBuilder()
@@ -101,7 +101,7 @@ object NetworkFactory {
         }
     }
 
-    private fun getLogInterceptors(): Interceptor {
+    fun getLogInterceptors(): Interceptor {
         return HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
             else HttpLoggingInterceptor.Level.NONE        }
