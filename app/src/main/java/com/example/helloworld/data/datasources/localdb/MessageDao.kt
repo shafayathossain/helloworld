@@ -4,9 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.helloworld.data.model.Message
-import io.reactivex.Flowable
-import io.reactivex.Maybe
+import com.example.helloworld.data.main.model.Message
 import io.reactivex.Single
 
 @Dao

@@ -1,4 +1,4 @@
-package com.example.helloworld.data.datasources.preference
+package com.example.helloworld.core.data.preference
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

@@ -1,4 +1,4 @@
-package com.example.helloworld.core.network
+package com.example.helloworld.core.data.network
 
 import io.reactivex.Flowable
 import io.reactivex.Maybe

@@ -1,9 +1,9 @@
-package com.example.helloworld.core.network
+package com.example.helloworld.core.data.network
 
 import android.content.Context
 import com.example.helloworld.BuildConfig
-import com.example.helloworld.data.datasources.preference.AppPreference
-import com.example.helloworld.data.datasources.preference.AppPreferenceImpl
+import com.example.helloworld.core.data.preference.AppPreference
+import com.example.helloworld.core.data.preference.AppPreferenceImpl
 import com.example.helloworld.utils.ConnectivityAndInternetAccess
 import com.orhanobut.logger.Logger
 import okhttp3.*

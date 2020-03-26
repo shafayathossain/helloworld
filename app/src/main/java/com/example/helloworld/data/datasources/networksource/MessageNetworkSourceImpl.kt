@@ -1,8 +1,7 @@
 package com.example.helloworld.data.datasources.networksource
 
-import com.example.helloworld.data.model.Message
-import com.example.helloworld.core.network.onResponse
-import io.reactivex.Flowable
+import com.example.helloworld.data.main.model.Message
+import com.example.helloworld.core.data.network.onResponse
 import io.reactivex.Maybe
 import javax.inject.Inject
 

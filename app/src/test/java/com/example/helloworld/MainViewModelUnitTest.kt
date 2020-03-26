@@ -1,12 +1,11 @@
 package com.example.helloworld
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.helloworld.data.model.Message
-import com.example.helloworld.data.repository.main.MainRepository
+import com.example.helloworld.data.main.model.Message
+import com.example.helloworld.data.main.MainRepository
 import com.example.helloworld.ui.features.main.MainViewModel
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler

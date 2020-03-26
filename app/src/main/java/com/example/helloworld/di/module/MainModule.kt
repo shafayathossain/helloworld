@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.room.Room
 import com.example.helloworld.BuildConfig
-import com.example.helloworld.core.localdb.AppDatabase
-import com.example.helloworld.core.network.NetworkFactory
+import com.example.helloworld.core.data.localdb.AppDatabase
+import com.example.helloworld.core.data.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSourceImpl
-import com.example.helloworld.data.repository.main.MainRepository
-import com.example.helloworld.data.repository.main.MainRepositoryImpl
+import com.example.helloworld.data.main.MainRepository
+import com.example.helloworld.data.main.MainRepositoryImpl
 import com.example.helloworld.di.annotations.ActivityScope
 import com.example.helloworld.di.annotations.ApplicationContext
 import com.example.helloworld.di.annotations.FragmentScope

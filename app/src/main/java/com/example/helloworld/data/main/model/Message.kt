@@ -1,4 +1,4 @@
-package com.example.helloworld.data.model
+package com.example.helloworld.data.main.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

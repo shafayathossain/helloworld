@@ -1,17 +1,18 @@
-package com.example.helloworld.data.repository.main
+package com.example.helloworld.data.main
 
-import com.example.helloworld.core.localdb.AppDatabase
-import com.example.helloworld.core.network.RetrofitException
+import com.example.helloworld.core.data.localdb.AppDatabase
+import com.example.helloworld.core.data.network.RetrofitException
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
-import com.example.helloworld.data.datasources.preference.AppPreference
-import com.example.helloworld.data.model.Message
+import com.example.helloworld.core.data.preference.AppPreference
+import com.example.helloworld.data.main.model.Message
 import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(private val networkSource: MessageNetworkSource,
                                              private val db: AppDatabase,
-                                             private val preference: AppPreference) : MainRepository {
+                                             private val preference: AppPreference) :
+    MainRepository {
 
     /**
      *   fetch message from network

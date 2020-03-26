@@ -1,34 +1,23 @@
 package com.example.helloworld
 
-import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.helloworld.core.localdb.AppDatabase
-import com.example.helloworld.core.network.RetrofitException
+import com.example.helloworld.core.data.localdb.AppDatabase
+import com.example.helloworld.core.data.network.RetrofitException
 import com.example.helloworld.data.datasources.localdb.MessageDao
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
-import com.example.helloworld.data.datasources.preference.AppPreference
-import com.example.helloworld.data.model.Message
-import com.example.helloworld.data.repository.main.MainRepositoryImpl
+import com.example.helloworld.core.data.preference.AppPreference
+import com.example.helloworld.data.main.model.Message
+import com.example.helloworld.data.main.MainRepositoryImpl
 import com.nhaarman.mockitokotlin2.KArgumentCaptor
 import io.reactivex.Maybe
-import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.disposables.Disposable
-import io.reactivex.internal.schedulers.ExecutorScheduler
 import io.reactivex.observers.TestObserver
-import io.reactivex.plugins.RxJavaPlugins
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-import java.util.concurrent.Callable
-import java.util.concurrent.Executor
-import java.util.concurrent.TimeUnit
 
 
 class MainRepositoryUnitTest {
@@ -51,7 +40,11 @@ class MainRepositoryUnitTest {
     fun initialize() {
         MockitoAnnotations.initMocks(this)
         captor = KArgumentCaptor(ArgumentCaptor.forClass(Message::class.java), Message::class)
-        repository = MainRepositoryImpl(networkSource, db, preference)
+        repository = MainRepositoryImpl(
+            networkSource,
+            db,
+            preference
+        )
     }
 
     @Test

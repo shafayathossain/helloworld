@@ -3,7 +3,7 @@ package com.example.helloworld
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.helloworld.core.network.NetworkFactory
+import com.example.helloworld.core.data.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
@@ -13,9 +13,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito
-import org.robolectric.util.ReflectionHelpers.setStaticField
-import retrofit2.Retrofit
 import java.net.HttpURLConnection
 
 @RunWith(AndroidJUnit4::class)

@@ -1,4 +1,4 @@
-package com.example.helloworld.core.network
+package com.example.helloworld.core.data.network
 
 import android.content.Context
 import com.example.helloworld.utils.ConnectivityAndInternetAccess
