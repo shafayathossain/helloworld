@@ -1,14 +1,11 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    buildToolsVersion "29.0.3"
     defaultConfig {
         applicationId "com.example.helloworld"
         minSdkVersion 19
@@ -50,7 +47,7 @@ dependencies {
     testImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    testImplementation "org.mockito:mockito-core:2.26.0"
+    testImplementation "org.mockito:mockito-core:3.3.3"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
     testImplementation 'androidx.test:core:1.2.0'
     testImplementation 'androidx.test:runner:1.2.0'
@@ -68,11 +65,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     // dagger2
-    api 'com.google.dagger:dagger:2.25.2'
-    api 'com.google.dagger:dagger-android:2.25.2'
-    api 'com.google.dagger:dagger-android-support:2.25.2' // if you use the support libraries
-    kapt 'com.google.dagger:dagger-android-processor:2.23.2'
-    kapt 'com.google.dagger:dagger-compiler:2.25.2'
+    api 'com.google.dagger:dagger:2.27'
+    api 'com.google.dagger:dagger-android:2.27'
+    api 'com.google.dagger:dagger-android-support:2.27' // if you use the support libraries
+    kapt 'com.google.dagger:dagger-android-processor:2.27'
+    kapt 'com.google.dagger:dagger-compiler:2.27'
 
     // rxjava2
     implementation "io.reactivex.rxjava2:rxjava:2.2.17"
@@ -83,15 +80,15 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.3.1")
 
     // retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.7.1'
-    implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.7.2'
 
     // room
-    implementation "androidx.room:room-runtime:2.2.3"
-    kapt "androidx.room:room-compiler:2.2.3"
-    implementation "androidx.room:room-rxjava2:2.2.3"
-    testImplementation "androidx.room:room-testing:2.2.3"
+    implementation "androidx.room:room-runtime:2.2.5"
+    kapt "androidx.room:room-compiler:2.2.5"
+    implementation "androidx.room:room-rxjava2:2.2.5"
+    testImplementation "androidx.room:room-testing:2.2.5"
 
     // mockwebserver
     testImplementation "com.squareup.okhttp3:mockwebserver:4.3.1"
