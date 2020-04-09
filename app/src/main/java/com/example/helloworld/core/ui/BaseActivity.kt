@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import dagger.android.support.DaggerAppCompatActivity
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
@@ -27,7 +26,7 @@ abstract class BaseActivity<ViewModel: BaseViewModel, Binding: ViewDataBinding>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this, factory).get(getViewModelClass())
+        viewModel = ViewModelProvider(this, factory).get(getViewModelClass())
         binding = DataBindingUtil.setContentView(this, getLayoutId())
         binding.lifecycleOwner = this
         lifecycle.addObserver(viewModel)
