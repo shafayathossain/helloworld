@@ -9,4 +9,7 @@ interface MessageNetworkService {
 
     @GET("resources/helloworld.json")
     fun getMessage(): Maybe<Response<Message>>
+
+    @GET("resources/helloworld.json")
+    suspend fun getCoroutineMessage(): Response<Message>
 }
