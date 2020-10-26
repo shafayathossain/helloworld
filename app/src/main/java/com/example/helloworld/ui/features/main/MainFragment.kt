@@ -16,7 +16,5 @@ class MainFragment : BaseFragment<MainViewModel, FragmentMainBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        viewModel.getMessage()
     }
 }
