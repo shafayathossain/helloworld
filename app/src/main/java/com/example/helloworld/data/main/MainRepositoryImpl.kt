@@ -27,34 +27,6 @@ class MainRepositoryImpl @Inject constructor(private val networkSource: MessageN
      *   on message retrieved successfully save message into preference and local db
      */
 
-    override fun getMessage(): Maybe<Message> {
-        return networkSource.getMessage()
-            .onErrorResumeNext { throwable: Throwable ->
-                if(throwable is RetrofitException) {
-                    if(throwable.getKind() == RetrofitException.Kind.NETWORK) {
-                        db.messageDao().getMessage()
-                            .onErrorResumeNext { _ ->
-                                Single.create<Message> {
-                                    it.onSuccess(Message(message = preference.message))
-                                }
-                            }
-                            .flatMapMaybe {
-                                Maybe.create<Message>{ emitter ->
-                                    emitter.onSuccess(it) }
-                            }
-                    } else Maybe.error(throwable)
-                } else Maybe.error(throwable)
-            }.map {
-                var message = it
-                if(it.message.isNullOrEmpty()) {
-                    message = Message(message = "Hello World!")
-                }
-                preference.message = message.message
-                db.messageDao().insertMessage(message)
-                message
-            }
-    }
-
     override suspend fun getCoroutineMessage(): Message {
 
         var message = Message()
@@ -64,8 +36,17 @@ class MainRepositoryImpl @Inject constructor(private val networkSource: MessageN
         }.onSuccess {
             message = it
         }.onFailure {
-            //todo get data from the local db
-            message = Message(message = preference.message)
+            if(it is RetrofitException){
+                if(it.getKind() == RetrofitException.Kind.NETWORK){
+                    runCatching {
+                        db.messageDao().getMessage()
+                    }.onSuccess {localMessage->
+                        message=localMessage
+                    }.onFailure {
+                        message = Message(message = preference.message)
+                    }
+                }else throw it
+            }else throw it
         }
 
         if(message.message.isEmpty())
