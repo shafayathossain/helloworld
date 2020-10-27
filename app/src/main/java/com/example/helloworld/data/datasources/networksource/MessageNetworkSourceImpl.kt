@@ -9,11 +9,6 @@ import javax.inject.Inject
 
 class MessageNetworkSourceImpl @Inject constructor(private val networkService: MessageNetworkService): MessageNetworkSource {
 
-    override fun getMessage(): Maybe<Message> {
-        return networkService.getMessage()
-            .onResponse()
-    }
-
     override suspend fun getCoroutineMessage() : Response<Message> {
         return networkService.getCoroutineMessage()
             .responseOrException()
