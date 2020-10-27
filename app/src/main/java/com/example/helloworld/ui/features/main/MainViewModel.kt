@@ -6,8 +6,6 @@ import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.example.helloworld.core.ui.BaseViewModel
 import com.example.helloworld.data.main.MainRepository
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,7 +17,7 @@ class MainViewModel @Inject constructor( private val repository: MainRepository)
     // using liveData scope
     val coroutineMessage : LiveData<String> = liveData(Dispatchers.IO){
         runCatching {
-            repository.getCoroutineMessage()
+            repository.getMessage()
         }.onSuccess {
             emit(it.message)
         }.onFailure {
@@ -31,7 +29,7 @@ class MainViewModel @Inject constructor( private val repository: MainRepository)
     fun getCoroutineMessage() {
         viewModelScope.launch(Dispatchers.IO){
             runCatching {
-                repository.getCoroutineMessage()
+                repository.getMessage()
             }.onSuccess {
                 message.value = it.message
             }.onFailure {
