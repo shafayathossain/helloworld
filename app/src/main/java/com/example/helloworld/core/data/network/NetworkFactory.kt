@@ -5,6 +5,7 @@ import com.example.helloworld.BuildConfig
 import com.example.helloworld.core.data.preference.AppPreference
 import com.example.helloworld.core.data.preference.AppPreferenceImpl
 import com.example.helloworld.utils.ConnectivityAndInternetAccess
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.orhanobut.logger.Logger
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -50,9 +51,7 @@ object NetworkFactory {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(
-                RxErrorHandlingCallAdapterFactory.create(
-                    context
-                )
+                CoroutineCallAdapterFactory()
             )
             .client(okHttpClient)
             .callbackExecutor {

@@ -11,8 +11,8 @@ import io.reactivex.Single
 interface MessageDao {
 
     @Query("SELECT * FROM Message")
-    fun getMessage(): Single<Message>
+    suspend fun getMessage(): Message
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertMessage(message: Message)
+    suspend fun insertMessage(message: Message)
 }
