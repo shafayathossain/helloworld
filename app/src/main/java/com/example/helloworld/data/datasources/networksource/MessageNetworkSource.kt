@@ -5,7 +5,5 @@ import io.reactivex.Maybe
 import retrofit2.Response
 
 interface MessageNetworkSource {
-
-    fun getMessage(): Maybe<Message>
     suspend fun getCoroutineMessage() : Response<Message>
 }
