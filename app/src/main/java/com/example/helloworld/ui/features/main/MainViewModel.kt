@@ -16,18 +16,6 @@ class MainViewModel @Inject constructor( private val repository: MainRepository)
 
     val message = MutableLiveData<String>()
 
-    fun getMessage() {
-        val disposable = repository.getMessage()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
-                message.value = it.message
-            }, {
-                it.printStackTrace()
-            })
-        compositeDisposable.add(disposable)
-    }
-
     // using liveData scope
     val coroutineMessage : LiveData<String> = liveData(Dispatchers.IO){
         runCatching {
