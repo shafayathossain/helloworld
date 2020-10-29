@@ -26,9 +26,9 @@ class MainRepositoryImpl @Inject constructor(private val networkSource: MessageN
         var message = Message()
 
         runCatching {
-            networkSource.getMessage().body()!!
+            networkSource.getMessage().body()
         }.onSuccess {
-            message = it
+            message = it ?: Message()
         }.onFailure {
             if(it is RetrofitException){
                 if(it.getKind() == RetrofitException.Kind.NETWORK){

@@ -9,8 +9,8 @@ import com.example.helloworld.data.datasources.networksource.MessageNetworkSourc
 import com.example.helloworld.core.data.preference.AppPreference
 import com.example.helloworld.data.main.model.Message
 import com.example.helloworld.data.main.MainRepositoryImpl
-import io.reactivex.Maybe
-import io.reactivex.observers.TestObserver
+import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -18,6 +18,8 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import retrofit2.Response
+
 
 @RunWith(AndroidJUnit4::class)
 class EntityReadWriteTest {
@@ -45,29 +47,23 @@ class EntityReadWriteTest {
 
     @Test
     fun testIfMessageInserted() {
-        var repository = MainRepositoryImpl(
+        val repository = MainRepositoryImpl(
             networkSource,
             db,
             preference
         )
-        val expectedDataFromNetwork = Message(message = "Hello World!!")
-        var testObserver = TestObserver.create<Message>()
-        Mockito.`when`(networkSource.getMessage()).thenReturn(Maybe.just(expectedDataFromNetwork))
+        val expectedDataFromNetwork = Message(message = "Hello World!")
+        var testResponse: Message
+        runBlocking{
+            Mockito.`when`(networkSource.getMessage()).thenReturn(Response.success(expectedDataFromNetwork))
 
-        repository.getMessage()
-            .subscribe(testObserver)
-        testObserver.assertValue {
-            it.message == expectedDataFromNetwork.message
-        }
-            .dispose()
+            testResponse = repository.getMessage()
+            assertThat(testResponse.message).isEqualTo(expectedDataFromNetwork.message)
 
-        testObserver = TestObserver.create<Message>()
-        db.messageDao().getMessage()
-            .subscribe(testObserver)
-        testObserver
-            .assertValue {
-            print(it)
-            it.message == expectedDataFromNetwork.message
+            testResponse = db.messageDao().getMessage()
+            assertThat(testResponse.message).isEqualTo(expectedDataFromNetwork.message)
         }
+
+
     }
 }

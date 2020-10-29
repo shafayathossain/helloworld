@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.helloworld.core.data.network.NetworkFactory
 import com.example.helloworld.data.datasources.networksource.MessageNetworkService
+import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.Dispatcher
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -57,12 +58,12 @@ class NetworkServiceTest {
     }
 
     @Test
-    fun testMessageResponse() {
+    fun testMessageResponse() = runBlocking{
 //        val response = MockResponse()
 //            .setResponseCode(HttpURLConnection.HTTP_OK)
 //            .setBody("{\"message\": \"Hello World\"}")
 //        mockWebServer.enqueue(response)
-        val message = messageNetworkService.getMessage().blockingGet()
+        val message = messageNetworkService.getMessage()
         assert(message.body()?.message == "Hello World")
     }
 }

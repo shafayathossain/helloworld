@@ -9,6 +9,7 @@ import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.disposables.Disposable
 import io.reactivex.internal.schedulers.ExecutorScheduler
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -64,11 +65,11 @@ class MainViewModelUnitTest {
     }
 
     @Test
-    fun getMessage() {
+    fun getMessage() = runBlocking{
         val expectedMessage = Message(message = "Hello World!!")
 
-        `when`(repository.getMessage()).thenReturn(Maybe.just(expectedMessage))
-        viewModel.getMessage()
+        `when`(repository.getMessage()).thenReturn(expectedMessage)
+        viewModel.getCoroutineMessage()
         verify(repository, times(1)).getMessage()
         val actualMessage = LiveDataTestUtil<String>().getValue(viewModel.message)
 
