@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -47,6 +48,11 @@ class MainRepositoryUnitTest {
             db,
             preference
         )
+    }
+
+    @After
+    fun closeDb() {
+        db.close()
     }
 
     @Test

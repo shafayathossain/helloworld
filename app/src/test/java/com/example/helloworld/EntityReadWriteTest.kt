@@ -24,10 +24,6 @@ import retrofit2.Response
 @RunWith(AndroidJUnit4::class)
 class EntityReadWriteTest {
 
-    @Mock
-    private lateinit var networkSource: MessageNetworkSource
-    @Mock
-    private lateinit var preference: AppPreference
     private lateinit var db: AppDatabase
 
     @Before
@@ -47,21 +43,14 @@ class EntityReadWriteTest {
 
     @Test
     fun testIfMessageInserted() {
-        val repository = MainRepositoryImpl(
-            networkSource,
-            db,
-            preference
-        )
-        val expectedDataFromNetwork = Message(message = "Hello World!")
+        val expectedDataFromDb = Message(1, message = "Hello World!")
         var testResponse: Message
         runBlocking{
-            Mockito.`when`(networkSource.getMessage()).thenReturn(Response.success(expectedDataFromNetwork))
 
-            testResponse = repository.getMessage()
-            assertThat(testResponse.message).isEqualTo(expectedDataFromNetwork.message)
+            db.messageDao().insertMessage(expectedDataFromDb)
 
             testResponse = db.messageDao().getMessage()
-            assertThat(testResponse.message).isEqualTo(expectedDataFromNetwork.message)
+            assertThat(testResponse).isEqualTo(expectedDataFromDb)
         }
 
 
