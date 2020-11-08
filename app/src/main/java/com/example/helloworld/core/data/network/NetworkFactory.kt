@@ -51,7 +51,7 @@ object NetworkFactory {
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .addCallAdapterFactory(
-                CoroutineCallAdapterFactory()
+                ErrorHandlingAdapter.ErrorHandlingCallAdapterFactory()
             )
             .client(okHttpClient)
             .callbackExecutor {
