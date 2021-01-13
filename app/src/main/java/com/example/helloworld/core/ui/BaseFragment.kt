@@ -6,24 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModelProvider
 import dagger.android.support.DaggerFragment
 import java.lang.reflect.ParameterizedType
 import javax.inject.Inject
 
-abstract class BaseFragment<ViewModel: BaseViewModel, Binding: ViewDataBinding>: DaggerFragment() {
+abstract class BaseFragment<ViewModel: BaseViewModel>: DaggerFragment() {
 
     @Inject
     lateinit var factory: ViewModelProvider.Factory
     lateinit var viewModel: ViewModel
-    lateinit var binding: Binding
     private lateinit var communicator: BaseFragmentCommunicator
 
     abstract fun getLayoutId(): Int
-
-    abstract fun setVariables(binding: Binding)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -43,16 +38,8 @@ abstract class BaseFragment<ViewModel: BaseViewModel, Binding: ViewDataBinding>:
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = DataBindingUtil.inflate(inflater, getLayoutId(), container, false)
-        binding.lifecycleOwner = this
-        setVariables(binding)
         lifecycle.addObserver(viewModel)
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        binding.unbind()
+        return inflater.inflate(getLayoutId(), container, false)
     }
 
     fun startActivity(clz: Class<*>?, bundle: Bundle?) {

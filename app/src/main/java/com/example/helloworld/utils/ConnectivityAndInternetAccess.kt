@@ -7,7 +7,6 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkInfo
-import android.os.AsyncTask
 import android.os.Build
 import android.provider.Settings
 import android.telephony.TelephonyManager
@@ -41,11 +40,8 @@ class ConnectivityAndInternetAccess(val host: String) {
          */
         private fun getActiveNetworkInfo(context: Context): NetworkInfo? {
             var networkInfo: NetworkInfo? = null
-            val cm = context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (cm != null) {
-                networkInfo = cm.activeNetworkInfo
-            }
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            networkInfo = cm.activeNetworkInfo
             return networkInfo
         }
 
@@ -59,13 +55,13 @@ class ConnectivityAndInternetAccess(val host: String) {
             var networkInfo: Network? = null
             val cm = context
                     .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (cm != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    networkInfo = cm.activeNetwork
-                } else {
-                    Log.e("UnusableMethod", "Cannot use this method for the current API Level")
-                }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                networkInfo = cm.activeNetwork
+            } else {
+                Log.e("UnusableMethod", "Cannot use this method for the current API Level")
             }
+
             return networkInfo
         }
 
@@ -79,13 +75,13 @@ class ConnectivityAndInternetAccess(val host: String) {
             var networkInfo: NetworkInfo? = null
             val cm = context
                     .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (cm != null && network != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    networkInfo = cm.getNetworkInfo(network)
-                } else {
-                    Log.e("UnusableMethod", "Cannot use this method for the current API Level")
-                }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                networkInfo = cm.getNetworkInfo(network)
+            } else {
+                Log.e("UnusableMethod", "Cannot use this method for the current API Level")
             }
+
             return networkInfo
         }
 
@@ -98,13 +94,13 @@ class ConnectivityAndInternetAccess(val host: String) {
             val cm = context
                     ?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             var nwInfo = arrayOfNulls<NetworkInfo>(0)
-            if (cm != null) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    nwInfo = cm.allNetworkInfo
-                } else {
-                    Log.e("UnusableMethod", "Cannot use this method for the current API Level")
-                }
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                nwInfo = cm.allNetworkInfo
+            } else {
+                Log.e("UnusableMethod", "Cannot use this method for the current API Level")
             }
+
             return nwInfo
         }
 
@@ -129,11 +125,11 @@ class ConnectivityAndInternetAccess(val host: String) {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
-                if (!networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) {
+                if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_FOREGROUND) == false) {
                     isNetworkFacilitatingFastNetworkSwitching = true
                 }
             } else {
-                Log.e("UnusableMethod", null)
+                Log.e("UnusableMethod", "")
             }
             return isNetworkFacilitatingFastNetworkSwitching
         }
@@ -149,11 +145,11 @@ class ConnectivityAndInternetAccess(val host: String) {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
-                if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) {
+                if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_FOREGROUND) == true) {
                     isNetworkUsableByApps = true
                 }
             } else {
-                Log.e("UnusableMethod", null)
+                Log.e("UnusableMethod", "")
             }
             return isNetworkUsableByApps
         }
@@ -163,11 +159,11 @@ class ConnectivityAndInternetAccess(val host: String) {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 val networkCapabilities = connectivityManager.getNetworkCapabilities(network)
-                if (!networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)) {
+                if (networkCapabilities?.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) == true) {
                     isNetworkSuspended = true
                 }
             } else {
-                Log.e("UnusableMethod", null)
+                Log.e("UnusableMethod", "")
             }
             return isNetworkSuspended
         }
@@ -188,44 +184,39 @@ class ConnectivityAndInternetAccess(val host: String) {
                             .getNetworkCapabilities(network)
                     if (networkCapabilities != null) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                            if (network != null) {
-                                if (networkCapabilities != null) {
-                                    if (networkCapabilities.hasCapability(
-                                                    NetworkCapabilities.NET_CAPABILITY_INTERNET) /* API >= 21*/
-                                            && networkCapabilities.hasCapability(
-                                                    NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/
-                                            && networkCapabilities.hasCapability(
-                                                    NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) /*API >= 28*/
-                                            && networkCapabilities.hasCapability(
-                                                    NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) /*API >= 28*/ {
-                                        isConnected = true
-                                    }
-                                }
+
+                            if (networkCapabilities.hasCapability(
+                                            NetworkCapabilities.NET_CAPABILITY_INTERNET) /* API >= 21*/
+                                    && networkCapabilities.hasCapability(
+                                            NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/
+                                    && networkCapabilities.hasCapability(
+                                            NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED) /*API >= 28*/
+                                    && networkCapabilities.hasCapability(
+                                            NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) /*API >= 28*/ {
+                                isConnected = true
                             }
+
+
                         } else {
-                            if (network != null) {
-                                if (networkCapabilities != null) {
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                        if (networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/
-                                                && networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/) {
-                                            isConnected = true
-                                        }
-                                    } else {
-                                        if (networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/) {
-                                            isConnected = true
-                                        }
-                                    }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if (networkCapabilities.hasCapability(
+                                                NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/
+                                        && networkCapabilities.hasCapability(
+                                                NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/) {
+                                    isConnected = true
+                                }
+                            } else {
+                                if (networkCapabilities.hasCapability(
+                                                NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/) {
+                                    isConnected = true
                                 }
                             }
                         }
                     } else {
-                        Log.e("NullNetworkCapabilities", null)
+                        Log.e("NullNetworkCapabilities", "")
                     }
                 } else {
-                    Log.e("NullNetwork", null)
+                    Log.e("NullNetwork", "")
                 }
             } else {
                 val info = getActiveNetworkInfo(context)
@@ -339,10 +330,10 @@ class ConnectivityAndInternetAccess(val host: String) {
                                 }
                             }
                         } else {
-                            Log.e("NullNetworkCapabilities", null)
+                            Log.e("NullNetworkCapabilities", "")
                         }
                     } else {
-                        Log.e("NullNetwork", null)
+                        Log.e("NullNetwork", "")
                     }
                 }
             } else {
@@ -379,57 +370,49 @@ class ConnectivityAndInternetAccess(val host: String) {
                                 .getNetworkCapabilities(network)
                         if (networkCapabilities != null) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                                if (network != null) {
-                                    if (networkCapabilities != null) {
-                                        if ((networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_INTERNET) /* API >= 21*/
-                                                        && networkCapabilities
-                                                        .hasCapability(
-                                                                NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API>=23*/
-                                                        && networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)) /*API>=28*/
+                                if ((networkCapabilities.hasCapability(
+                                                NetworkCapabilities.NET_CAPABILITY_INTERNET) /* API >= 21*/
+                                                && networkCapabilities
+                                                .hasCapability(
+                                                        NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API>=23*/
                                                 && networkCapabilities.hasCapability(
-                                                        NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) /*API>=28*/ {
-                                            if (networkCapabilities.hasTransport(
-                                                            NetworkCapabilities.TRANSPORT_WIFI)) {
-                                                isConnectedWifi = true
-                                                break
-                                            }
-                                        }
+                                                NetworkCapabilities.NET_CAPABILITY_NOT_SUSPENDED)) /*API>=28*/
+                                        && networkCapabilities.hasCapability(
+                                                NetworkCapabilities.NET_CAPABILITY_FOREGROUND)) /*API>=28*/ {
+                                    if (networkCapabilities.hasTransport(
+                                                    NetworkCapabilities.TRANSPORT_WIFI)) {
+                                        isConnectedWifi = true
+                                        break
                                     }
                                 }
                             } else {
-                                if (network != null) {
-                                    if (networkCapabilities != null) {
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                            if (networkCapabilities.hasCapability(
-                                                            NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/
-                                                    && networkCapabilities.hasCapability(
-                                                            NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/) {
-                                                if (networkCapabilities.hasTransport(
-                                                                NetworkCapabilities.TRANSPORT_WIFI)) {
-                                                    isConnectedWifi = true
-                                                    break
-                                                }
-                                            }
-                                        } else {
-                                            if (networkCapabilities.hasCapability(
-                                                            NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/) {
-                                                if (networkCapabilities.hasTransport(
-                                                                NetworkCapabilities.TRANSPORT_WIFI)) {
-                                                    isConnectedWifi = true
-                                                    break
-                                                }
-                                            }
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    if (networkCapabilities.hasCapability(
+                                                    NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/
+                                            && networkCapabilities.hasCapability(
+                                                    NetworkCapabilities.NET_CAPABILITY_VALIDATED) /*API >= 23*/) {
+                                        if (networkCapabilities.hasTransport(
+                                                        NetworkCapabilities.TRANSPORT_WIFI)) {
+                                            isConnectedWifi = true
+                                            break
+                                        }
+                                    }
+                                } else {
+                                    if (networkCapabilities.hasCapability(
+                                                    NetworkCapabilities.NET_CAPABILITY_INTERNET) /*API >= 21*/) {
+                                        if (networkCapabilities.hasTransport(
+                                                        NetworkCapabilities.TRANSPORT_WIFI)) {
+                                            isConnectedWifi = true
+                                            break
                                         }
                                     }
                                 }
                             }
                         } else {
-                            Log.e("NullNetworkCapabilities", null)
+                            Log.e("NullNetworkCapabilities", "")
                         }
                     } else {
-                        Log.e("NullNetwork", null)
+                        Log.e("NullNetwork", "")
                     }
                 }
             } else {
@@ -550,9 +533,7 @@ class ConnectivityAndInternetAccess(val host: String) {
             val tm = context
                     .getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             var state = 0
-            if (tm != null) {
-                state = tm.dataState
-            }
+            state = tm.dataState
             return state == TelephonyManager.DATA_CONNECTED
         }
 

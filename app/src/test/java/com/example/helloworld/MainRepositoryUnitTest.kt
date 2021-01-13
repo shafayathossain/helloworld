@@ -2,22 +2,32 @@ package com.example.helloworld
 
 import com.example.helloworld.core.data.localdb.AppDatabase
 import com.example.helloworld.core.data.network.RetrofitException
+import com.example.helloworld.core.data.preference.AppPreference
 import com.example.helloworld.data.datasources.localdb.MessageDao
 import com.example.helloworld.data.datasources.networksource.MessageNetworkSource
-import com.example.helloworld.core.data.preference.AppPreference
-import com.example.helloworld.data.main.model.Message
 import com.example.helloworld.data.main.MainRepositoryImpl
+import com.example.helloworld.data.main.model.Message
 import com.nhaarman.mockitokotlin2.KArgumentCaptor
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
+import okhttp3.internal.wait
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mock
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import org.mockito.stubbing.OngoingStubbing
+import org.powermock.api.mockito.PowerMockito
+import org.powermock.core.classloader.annotations.PrepareForTest
+import org.powermock.modules.junit4.PowerMockRunner
+import java.lang.reflect.Method
+import kotlin.math.exp
 
 
 class MainRepositoryUnitTest {
@@ -47,14 +57,13 @@ class MainRepositoryUnitTest {
         )
     }
 
+
     @Test
+    @PrepareForTest(MainRepositoryImpl::class)
     fun testGetMessage() {
 
-        // Check if data after network call success is correct
-
         val expectedDataFromNetwork = Message(message = "Hello World!")
-        val expectedDataFromDb = Message(message = "Hello World")
-        var testObserver = TestObserver.create<Message>()
+        val testObserver = TestObserver.create<Message>()
         `when`(db.messageDao()).thenReturn(dao)
 
         `when`(networkSource.getMessage()).thenReturn(Maybe.just(expectedDataFromNetwork))
@@ -67,80 +76,123 @@ class MainRepositoryUnitTest {
             }
             .dispose()
 
-        // check if data after network call success and fetch from local db is correct
-        testObserver = TestObserver.create<Message>()
-        `when`(networkSource.getMessage()).thenReturn(Maybe.error(RetrofitException(
-            "Failed 1",
-            "",
-            null,
-            RetrofitException.Kind.NETWORK,
-            null,
-            null
-        )))
+        val spyRepository: MainRepositoryImpl = PowerMockito.spy(repository)
+        PowerMockito.verifyPrivate(spyRepository)
+            .invoke("saveAndReturnMessage", expectedDataFromNetwork)
+
+    }
+
+    @Test
+    @PrepareForTest(MainRepositoryImpl::class)
+    fun testGetMessageOnError() {
+        val expectedDataFromNetwork = Message(message = "Hello World!")
+        `when`(db.messageDao()).thenReturn(dao)
+        `when`(dao.getMessage()).thenReturn(Single.create { it.onSuccess(expectedDataFromNetwork) })
+        `when`(networkSource.getMessage()).thenReturn(
+            Maybe.error(
+                RetrofitException(
+                    "Failed 1",
+                    "",
+                    null,
+                    RetrofitException.Kind.NETWORK,
+                    null,
+                    null
+                )
+            )
+        )
+        val getMessageFromDbMethod: Method = repository.javaClass
+            .getDeclaredMethod("getMessageFromPreference")
+
+        getMessageFromDbMethod.isAccessible = true
+        val testObserver = TestObserver.create<Message>()
+        repository.getMessage()
+                .subscribe(testObserver)
+        val spyRepository: MainRepositoryImpl = PowerMockito.spy(repository)
+        PowerMockito.verifyPrivate(spyRepository, atLeast(3))
+                .invoke(getMessageFromDbMethod)
+    }
+
+    @Test
+    @PrepareForTest(MainRepositoryImpl::class)
+    fun testGetMessageFromDbOnSuccess() {
+        val expectedDataFromDb = Message(message = "Hello World")
+        val getMessageFromDbMethod: Method = repository.javaClass
+            .getDeclaredMethod("getMessageFromDb")
+        getMessageFromDbMethod.isAccessible = true
+        `when`(db.messageDao()).thenReturn(dao)
         `when`(dao.getMessage()).thenReturn(Single.create { it.onSuccess(expectedDataFromDb) })
-        repository.getMessage()
-            .subscribe(testObserver)
 
+        val testObserver = TestObserver.create<Message>()
+        (getMessageFromDbMethod.invoke(repository) as Maybe<Message>).subscribe(testObserver)
         testObserver
             .assertValue{
                 it.message == expectedDataFromDb.message
             }
             .dispose()
-        verify(dao).getMessage()
+    }
 
-        // check if network call and local db data fetch failed, then data from preference is correct
-        testObserver = TestObserver.create<Message>()
+    @Test
+    @PrepareForTest(MainRepositoryImpl::class)
+    fun testGetMessageFromDbOnError() {
 
-        `when`(networkSource.getMessage()).thenReturn(Maybe.error(RetrofitException(
-            "Failed 2",
-            "",
-            null,
-            RetrofitException.Kind.NETWORK,
-            null,
-            null
-        )))
-        `when`(dao.getMessage()).thenReturn(Single.create { it.onError(Throwable("Test error")) })
-        `when`(preference.message).thenReturn(expectedDataFromDb.message)
+        val getMessageFromDbMethod: Method = repository.javaClass
+            .getDeclaredMethod("getMessageFromDb")
+        val getMessageFromPreferenceMethod: Method = repository.javaClass
+            .getDeclaredMethod("getMessageFromPreference")
+            .apply {
+                isAccessible = true
+            }
+        getMessageFromDbMethod.isAccessible = true
+        `when`(db.messageDao()).thenReturn(dao)
+        `when`(dao.getMessage()).thenReturn(Single.create { it.onError(Throwable("Test exception")) })
 
-        repository.getMessage()
+        val spyRepository = PowerMockito.spy(repository)
+        PowerMockito.verifyPrivate(spyRepository, atMost(0))
+                .invoke(getMessageFromPreferenceMethod)
+    }
+
+    @Test
+    fun testGetMessageFromPreference() {
+        val expectedDataFromPreference = "Hello World"
+        val testObserver = TestObserver.create<Message>()
+        val getMessageFromPreferenceMethod: Method = repository.javaClass
+            .getDeclaredMethod("getMessageFromPreference")
+        getMessageFromPreferenceMethod.isAccessible = true
+        `when`(preference.message).thenReturn(expectedDataFromPreference)
+
+        (getMessageFromPreferenceMethod.invoke(repository) as Single<Message>)
             .subscribe(testObserver)
 
         testObserver
             .assertValue{
-                it.message == expectedDataFromDb.message
+                it.message == expectedDataFromPreference
             }
             .dispose()
+    }
 
+    @Test
+     fun testSaveAndReturnMessage() {
+        val expectedMessage = Message(message = "Hello World")
+        val saveAndReturnMessageMethod: Method = repository.javaClass
+            .getDeclaredMethod("saveAndReturnMessage", Message::class.java)
+        saveAndReturnMessageMethod.isAccessible = true
+        `when`(db.messageDao()).thenReturn(dao)
+        saveAndReturnMessageMethod.invoke(repository, expectedMessage)
+        verify(dao, times(1)).insertMessage(captor.capture())
+        assertEquals(expectedMessage, captor.firstValue)
+     }
 
-        // check if network call, local db data fetching failed and preference has no data,
-        // then default "Hello World!" is returned or not
-
-        testObserver = TestObserver.create<Message>()
-        `when`(networkSource.getMessage()).thenReturn(Maybe.error(RetrofitException(
-            "",
-            "",
-            null,
-            RetrofitException.Kind.NETWORK,
-            null,
-            null
-        )))
-        `when`(dao.getMessage()).thenReturn(Single.create { it.onError(Throwable("Test error")) })
-        `when`(preference.message).thenReturn("")
-        repository.getMessage()
-            .subscribe(testObserver)
-
-        testObserver
-            .assertValue{
-                it.message == "Hello World!"
-            }
-            .dispose()
-
-        // verify if data inserted into local db
-        verify(dao, times(4)).insertMessage(captor.capture())
-        assertEquals(expectedDataFromNetwork, captor.firstValue)
-        assertEquals(expectedDataFromDb, captor.secondValue)
-        assertEquals(expectedDataFromDb, captor.thirdValue)
-        assertEquals(Message(message = "Hello World!"), captor.allValues[3])
+    @Test
+    fun testSaveAndReturnMessageForEmptyMessage() {
+        val expectedMessage = Message(message = MainRepositoryImpl.DEFAULT_MESSAGE)
+        val pMessage = Message()
+        val saveAndReturnMessageMethod: Method = repository.javaClass
+            .getDeclaredMethod("saveAndReturnMessage", Message::class.java)
+        saveAndReturnMessageMethod.isAccessible = true
+        `when`(db.messageDao()).thenReturn(dao)
+        saveAndReturnMessageMethod.invoke(repository, pMessage)
+        verify(dao, times(1)).insertMessage(captor.capture())
+        assertEquals(expectedMessage, captor.firstValue)
     }
 
 }
