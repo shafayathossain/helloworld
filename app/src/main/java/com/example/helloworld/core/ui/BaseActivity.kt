@@ -3,26 +3,21 @@ package com.example.helloworld.core.ui
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
-import dagger.android.support.DaggerAppCompatActivity
 import java.lang.reflect.ParameterizedType
-import javax.inject.Inject
 
-abstract class BaseActivity<ViewModel: BaseViewModel>
-    : DaggerAppCompatActivity(),
+abstract class BaseActivity<ViewModel : BaseViewModel>
+    : AppCompatActivity(),
     BaseFragmentCommunicator {
 
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    lateinit var viewModel: ViewModel
+    abstract val viewModel: ViewModel
 
     abstract fun getLayoutId(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(getLayoutId())
-        viewModel = ViewModelProvider(this, factory).get(getViewModelClass())
         lifecycle.addObserver(viewModel)
     }
 

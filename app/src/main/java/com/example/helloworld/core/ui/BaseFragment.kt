@@ -6,31 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
-import dagger.android.support.DaggerFragment
+import androidx.fragment.app.Fragment
 import java.lang.reflect.ParameterizedType
-import javax.inject.Inject
 
-abstract class BaseFragment<ViewModel: BaseViewModel>: DaggerFragment() {
+abstract class BaseFragment<ViewModel : BaseViewModel> : Fragment() {
 
-    @Inject
-    lateinit var factory: ViewModelProvider.Factory
-    lateinit var viewModel: ViewModel
     private lateinit var communicator: BaseFragmentCommunicator
+
+    abstract val viewModel: ViewModel
 
     abstract fun getLayoutId(): Int
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if(context is BaseFragmentCommunicator) {
+        if (context is BaseFragmentCommunicator) {
             communicator = context
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, factory).get(getViewModelClass())
-
     }
 
     override fun onCreateView(

@@ -2,12 +2,16 @@ package com.example.helloworld.ui.features.main
 
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.Observer
+import androidx.fragment.app.viewModels
 import com.example.helloworld.R
 import com.example.helloworld.core.ui.BaseFragment
 import com.google.android.material.textview.MaterialTextView
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainFragment : BaseFragment<MainViewModel>() {
+
+    override val viewModel: MainViewModel by viewModels()
 
     override fun getLayoutId(): Int = R.layout.fragment_main
 

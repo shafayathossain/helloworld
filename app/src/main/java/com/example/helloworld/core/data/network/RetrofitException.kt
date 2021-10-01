@@ -164,12 +164,13 @@ class RetrofitException(private val _message: String?,
      */
     @Throws(IOException::class)
     fun <T> getErrorBodyAs(type: Class<T>): T? {
-        if (_response == null || _response.errorBody() == null || _retrofit == null) {
-            return null
-        }
-        val converter : Converter<ResponseBody, T> =
+        return if (_response?.errorBody() == null || _retrofit == null) {
+            null
+        } else {
+            val converter: Converter<ResponseBody, T> =
                 _retrofit.responseBodyConverter(type, arrayOfNulls<Annotation>(0))
-        return converter.convert(_response.errorBody())
+            converter.convert(_response.errorBody())
+        }
     }
 
 

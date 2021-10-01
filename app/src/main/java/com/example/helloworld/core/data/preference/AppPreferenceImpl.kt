@@ -3,8 +3,8 @@ package com.example.helloworld.core.data.preference
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.example.helloworld.R
-import com.example.helloworld.di.annotations.ApplicationContext
 import com.google.gson.Gson
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
 
@@ -70,7 +70,7 @@ class AppPreferenceImpl @Inject constructor(@ApplicationContext context: Context
         saveString(key, valueString)
     }
 
-    private fun <T>getObject(key: String, clazz: Class<T>): T {
+    private fun <T> getObject(key: String, clazz: Class<T>): T {
         return Gson().fromJson<T>(preference.getString(key, "{}"), clazz)
     }
 

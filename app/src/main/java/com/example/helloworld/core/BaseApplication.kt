@@ -1,19 +1,12 @@
 package com.example.helloworld.core
 
-import com.example.helloworld.di.component.DaggerApplicationComponent
+import android.app.Application
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import dagger.android.AndroidInjector
-import dagger.android.DaggerApplication
+import dagger.hilt.android.HiltAndroidApp
 
-
-class BaseApplication : DaggerApplication() {
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerApplicationComponent
-            .builder()
-            .application(this)
-            .build()
-    }
+@HiltAndroidApp
+class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
