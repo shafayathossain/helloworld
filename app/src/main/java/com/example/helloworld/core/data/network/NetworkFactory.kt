@@ -26,8 +26,7 @@ object NetworkFactory {
                 getAuthInterceptor(
                     appContext
                 ),
-                getLogInterceptors(),
-                appContext
+                getLogInterceptors()
             )
         ).create(serviceClass)
     }
@@ -39,8 +38,7 @@ object NetworkFactory {
                 getAuthInterceptor(
                     appContext
                 ),
-                getLogInterceptors(),
-                appContext
+                getLogInterceptors()
             )
         )
     }
@@ -61,14 +59,14 @@ object NetworkFactory {
             .build()
     }
 
-    fun getOkHttpClient(authInterceptor: Interceptor, logInterceptor: Interceptor, context: Context): OkHttpClient {
+    fun getOkHttpClient(authInterceptor: Interceptor, logInterceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .readTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
             .addInterceptor(logInterceptor)
             .addInterceptor(authInterceptor)
             .authenticator(object: Authenticator {
-                override fun authenticate(route: Route?, response: Response): Request? {
+                override fun authenticate(route: Route?, response: Response): Request {
                     return response.request
                 }
 
@@ -83,7 +81,7 @@ object NetworkFactory {
                 val requestBuilder = chain.request().newBuilder()
 //            val token = getSharedPreference(appContext).token
                 val token = ""
-                if (!token.isNullOrEmpty()) {
+                if (token.isNotEmpty()) {
                     requestBuilder.addHeader("Authorization", token)
                         .addHeader("Cache-control", "no-cache")
                 }
