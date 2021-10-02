@@ -3,6 +3,7 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("dagger.hilt.android.plugin")
+    id("androidx.navigation.safeargs.kotlin")
 }
 
 android {
@@ -103,4 +104,9 @@ dependencies {
 
     // debug db
     debugImplementation("com.github.amitshekhariitbhu.Android-Debug-Database:debug-db:1.0.6")
+
+    // Navigation component
+    implementation("androidx.navigation:navigation-fragment-ktx:2.3.5")
+    implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
+
 }

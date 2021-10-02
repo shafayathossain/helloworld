@@ -11,14 +11,5 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override val viewModel: MainViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer,
-                MainFragment()
-            )
-            .commit()
-    }
-
     override fun getLayoutId(): Int = R.layout.activity_main
 }
