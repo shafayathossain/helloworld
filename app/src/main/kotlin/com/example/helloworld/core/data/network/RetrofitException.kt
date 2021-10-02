@@ -137,7 +137,7 @@ class RetrofitException(private val _message: String?,
             return try {
                 NetworkFactory.getRetrofit(appContext)
                     .responseBodyConverter<T>(clazz, arrayOfNulls<Annotation>(0))
-                    .convert(errorBody)?.let { it } ?: throw Exception()
+                    .convert(errorBody) ?: throw Exception()
             } catch (ex: Exception) {
                 clazz.newInstance()
             }

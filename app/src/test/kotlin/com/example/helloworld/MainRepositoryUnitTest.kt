@@ -48,7 +48,7 @@ class MainRepositoryUnitTest {
 
     @Before
     fun initialize() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         captor = KArgumentCaptor(ArgumentCaptor.forClass(Message::class.java), Message::class)
         repository = MainRepositoryImpl(
             networkSource,

@@ -47,7 +47,7 @@ class NetworkServiceTest {
         val context = ApplicationProvider.getApplicationContext<Context>()
         messageNetworkService = NetworkFactory.getRetrofit(context,
             mockWebServer.url("/").toUri().toString(),
-            NetworkFactory.getOkHttpClient(NetworkFactory.getAuthInterceptor(context), NetworkFactory.getLogInterceptors(), context))
+            NetworkFactory.getOkHttpClient(NetworkFactory.getAuthInterceptor(context), NetworkFactory.getLogInterceptors()))
             .create(MessageNetworkService::class.java)
     }
 

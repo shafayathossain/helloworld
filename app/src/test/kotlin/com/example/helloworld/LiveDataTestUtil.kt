@@ -5,9 +5,9 @@ import androidx.lifecycle.Observer
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-public class LiveDataTestUtil<T> {
+class LiveDataTestUtil<T> {
 
-    public fun <T>getValue(liveData: LiveData<T>): T? {
+    fun <T>getValue(liveData: LiveData<T>): T? {
 
         val data = ArrayList<T>()
 
