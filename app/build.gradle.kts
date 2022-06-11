@@ -8,7 +8,6 @@ plugins {
 
 android {
     compileSdk = 31
-    buildToolsVersion = "30.0.3"
     defaultConfig {
         applicationId = "com.shafayat.helloworld"
         minSdk = 19
