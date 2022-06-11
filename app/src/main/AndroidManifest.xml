@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:name="com.shafayat.helloworld.core.BaseApplication"
         android:theme="@style/AppTheme">
-        <activity android:name="com.shafayat.helloworld.ui.features.main.MainActivity">
+        <activity android:name="com.shafayat.helloworld.ui.features.main.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
